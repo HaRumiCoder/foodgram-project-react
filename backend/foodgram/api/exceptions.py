@@ -9,6 +9,6 @@ def custom_exception_handler(exc, context):
 
     for key, item in response.data.items():
         if isinstance(item, list):
-            response.data[key] = " ".join(elem.title() for elem in item)
+            response.data[key] = str(item[0])
 
     return response

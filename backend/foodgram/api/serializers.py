@@ -4,19 +4,14 @@ import uuid
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
-from django.utils.translation import gettext_lazy as _
 from djoser import serializers as djoser_serializers
-from recipes.models import Favorite, Ingredient, IngredientRecipe, Recipe, Tag, ShoppingCartRecipe
 from rest_framework import serializers
+
+from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
+                            ShoppingCartRecipe, Tag)
 from users.models import Subscription
 
 User = get_user_model()
-
-RE_FAVORITE_ERROR = "Нельзя подписываться на рецепт повторно!"
-
-RE_SUBSCRIBTION_ERROR = "Нельзя подписываться на пользователя повторно!"
-
-SUBSCRIBE_TO_YOURSELF_ERROR = "Нельзя подписываться на себя!"
 
 
 class IsSubscribed:
@@ -34,7 +29,8 @@ class CreateUserSerializer(djoser_serializers.UserCreateSerializer):
 
     class Meta:
         model = User
-        fields = ("email", "id", "username", "first_name", "last_name", "password")
+        fields = (
+            "email", "id", "username", "first_name", "last_name", "password")
 
 
 class UserSerialiser(serializers.ModelSerializer, IsSubscribed):
@@ -78,14 +74,25 @@ class IngredientRecipeSerializer(serializers.ModelSerializer):
         )
 
 
+class LimitedRecipesListSerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        limit = self.context.get("request").query_params.get("recipes_limit")
+        if limit:
+            data = data.all()[: int(limit)]
+        return super(
+            LimitedRecipesListSerializer, self).to_representation(data)
+
+
 class RecipeSerializer(serializers.ModelSerializer):
     ingredients = IngredientRecipeSerializer(many=True)
     author = UserSerialiser(read_only=True)
     image = ImageBase64()
 
     class Meta:
+        list_serializer_class = LimitedRecipesListSerializer
         model = Recipe
         fields = (
+            "id",
             "ingredients",
             "tags",
             "image",
@@ -106,7 +113,8 @@ class RecipeSerializer(serializers.ModelSerializer):
         for ingredient in ingredients:
             ingredient_data = IngredientRecipeSerializer(ingredient).data
             IngredientRecipe.objects.create(
-                ingredient=get_object_or_404(Ingredient, pk=ingredient_data["id"]),
+                ingredient=get_object_or_404(
+                    Ingredient, pk=ingredient_data["id"]),
                 amount=ingredient_data["amount"],
                 recipe=recipe,
             )
@@ -125,7 +133,8 @@ class RecipeSerializer(serializers.ModelSerializer):
         for ingredient in ingredients:
             ingredient_data = IngredientRecipeSerializer(ingredient).data
             IngredientRecipe.objects.create(
-                ingredient=get_object_or_404(Ingredient, pk=ingredient_data["id"]),
+                ingredient=get_object_or_404(
+                    Ingredient, pk=ingredient_data["id"]),
                 amount=ingredient_data["amount"],
                 recipe=instance,
             )
@@ -139,20 +148,40 @@ class SubscribeSerializer(serializers.ModelSerializer, IsSubscribed):
     username = serializers.ReadOnlyField(source="subscribed_to.username")
     first_name = serializers.ReadOnlyField(source="subscribed_to.first_name")
     last_name = serializers.ReadOnlyField(source="subscribed_to.last_name")
+    recipes = RecipeSerializer(
+        source="subscribed_to.recipes", read_only=True, many=True
+    )
+    recipes_count = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Subscription
-        fields = ("email", "id", "username", "first_name", "last_name")
+        fields = (
+            "email",
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "recipes",
+            "recipes_count",
+        )
+
+    def get_recipes_count(self, obj):
+        return obj.subscribed_to.recipes.count()
 
     def validate(self, data):
         subscribed_to_id = self.context["view"].kwargs.get("user_id")
         subscribed_to = get_object_or_404(User, pk=subscribed_to_id)
         if Subscription.objects.filter(
-            subscriber=self.context["request"].user, subscribed_to=subscribed_to
+            subscriber=self.context["request"].user,
+            subscribed_to=subscribed_to
         ).exists():
-            raise serializers.ValidationError({"errors": RE_SUBSCRIBTION_ERROR})
+            raise serializers.ValidationError(
+                {"errors": "Нельзя подписываться на пользователя повторно!"}
+            )
         if subscribed_to == self.context["request"].user:
-            raise serializers.ValidationError({"errors": SUBSCRIBE_TO_YOURSELF_ERROR})
+            raise serializers.ValidationError(
+                {"errors": "Нельзя подписываться на себя!"}
+            )
         return data
 
 
@@ -172,7 +201,9 @@ class FavoriteSerializer(serializers.ModelSerializer):
         if Favorite.objects.filter(
             user=self.context["request"].user, recipe=recipe
         ).exists():
-            raise serializers.ValidationError({"errors": _(RE_SUBSCRIBTION_ERROR)})
+            raise serializers.ValidationError(
+                {"errors": "Нельзя повторно добавлять рецепт в избранное"}
+            )
         return data
 
 
@@ -192,5 +223,7 @@ class ShoppingCartSerializer(serializers.ModelSerializer):
         if ShoppingCartRecipe.objects.filter(
             user=self.context["request"].user, recipe=recipe
         ).exists():
-            raise serializers.ValidationError({"errors": _(RE_SUBSCRIBTION_ERROR)})
+            raise serializers.ValidationError(
+                {"errors": "Нельзя повторно добавлять рецепт в список покупок"}
+            )
         return data
