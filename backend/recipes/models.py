@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-
+from django.core.validators import MinValueValidator
 from .validators import validate_hex_code
 
 User = get_user_model()
@@ -67,7 +67,10 @@ class Recipe(models.Model):
         blank=True,
         verbose_name="Теги"
     )
-    cooking_time = models.PositiveIntegerField(verbose_name="Время")
+    cooking_time = models.PositiveIntegerField(
+        verbose_name="Время",
+        validators=[MinValueValidator(1)]
+    )
 
     class Meta:
         verbose_name = "Рецепт"

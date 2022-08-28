@@ -25,7 +25,7 @@ SECRET_KEY = "*1@-gmxj@!j)s-+wsi*2g*$b@_%bx9wa%04r&0w=99o+y=5+r1"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -144,7 +144,10 @@ DJOSER = {
         "user": "api.serializers.UserSerialiser",
         "current_user": "api.serializers.UserSerialiser",
     },
-    "PERMISSIONS": {"user_list": ["rest_framework.permissions.AllowAny"]},
+    "PERMISSIONS": {
+        "user_list": ["rest_framework.permissions.AllowAny"],
+        "user": ["rest_framework.permissions.AllowAny"]
+    },
 }
 
 AUTH_USER_MODEL = "users.User"
