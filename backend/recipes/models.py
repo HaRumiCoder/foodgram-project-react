@@ -8,9 +8,16 @@ User = get_user_model()
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=40, unique=True, verbose_name="Название")
+    name = models.CharField(
+        max_length=40,
+        unique=True,
+        verbose_name="Название"
+    )
     color = models.CharField(
-        max_length=7, unique=True, verbose_name="Цвет", validators=[validate_hex_code]
+        max_length=7,
+        unique=True,
+        verbose_name="Цвет",
+        validators=[validate_hex_code]
     )
     slug = models.SlugField(max_length=30, unique=True)
 
@@ -20,8 +27,14 @@ class Tag(models.Model):
 
 
 class Ingredient(models.Model):
-    name = models.CharField(max_length=30, verbose_name="Имя")
-    measurement_unit = models.CharField(max_length=30, verbose_name="Единица измерения")
+    name = models.CharField(
+        max_length=30,
+        verbose_name="Имя"
+    )
+    measurement_unit = models.CharField(
+        max_length=30,
+        verbose_name="Единица измерения"
+    )
 
     class Meta:
         verbose_name = "Ингредиент"
@@ -29,13 +42,29 @@ class Ingredient(models.Model):
 
 
 class Recipe(models.Model):
-    name = models.CharField(max_length=200, verbose_name="Цвет")
-    text = models.TextField(null=True, blank=True, verbose_name="Описание")
-    image = models.ImageField(upload_to="recipes/", verbose_name="Картинка")
-    author = models.ForeignKey(
-        User, on_delete=models.CASCADE, verbose_name="Автор", related_name="recipes"
+    name = models.CharField(
+        max_length=200,
+        verbose_name="Цвет"
     )
-    tags = models.ManyToManyField(Tag, blank=True, verbose_name="Теги")
+    text = models.TextField(
+        null=True,
+        blank=True,
+        verbose_name="Описание"
+    )
+    image = models.ImageField(
+        upload_to="recipes/",
+        verbose_name="Картинка"
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name="Автор", 
+        related_name="recipes"
+    )
+    tags = models.ManyToManyField(
+        Tag,
+        blank=True,
+        verbose_name="Теги")
     cooking_time = models.PositiveIntegerField(
         verbose_name="Время", validators=[MinValueValidator(1)]
     )
@@ -84,7 +113,10 @@ class Favorite(models.Model):
         verbose_name_plural = "Избранные рецепты"
 
         constraints = [
-            models.UniqueConstraint(fields=["user", "recipe"], name="unique_favorite")
+            models.UniqueConstraint(
+                fields=["user", "recipe"],
+                name="unique_favorite"
+            )
         ]
 
 
