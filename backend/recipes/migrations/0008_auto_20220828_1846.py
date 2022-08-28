@@ -7,13 +7,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('recipes', '0007_auto_20220825_2224'),
+        ("recipes", "0007_auto_20220825_2224"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='recipe',
-            name='cooking_time',
-            field=models.PositiveIntegerField(validators=[django.core.validators.MinValueValidator(1)], verbose_name='Время'),
+            model_name="recipe",
+            name="cooking_time",
+            field=models.PositiveIntegerField(
+                validators=[django.core.validators.MinValueValidator(1)],
+                verbose_name="Время",
+            ),
         ),
     ]

@@ -2,21 +2,31 @@ from django.contrib.auth import get_user_model
 from django.db.models import Sum
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
+from recipes.models import (
+    Favorite,
+    Ingredient,
+    IngredientRecipe,
+    Recipe,
+    ShoppingCartRecipe,
+    Tag,
+)
 from rest_framework import generics, status, viewsets
 from rest_framework.decorators import api_view
-from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-
-from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
-                            ShoppingCartRecipe, Tag)
+from rest_framework.response import Response
 from users.models import Subscription
 
 from .filters import RecipeFilterBackend
 from .generics import CreateDeleteAPIView
-from .serializers import (FavoriteSerializer, IngredientSerializer,
-                          RecipeSerializer, ShoppingCartSerializer,
-                          SubscribeSerializer, TagSerializer)
 from .permissions import RecipePermission
+from .serializers import (
+    FavoriteSerializer,
+    IngredientSerializer,
+    RecipeSerializer,
+    ShoppingCartSerializer,
+    SubscribeSerializer,
+    TagSerializer,
+)
 
 User = get_user_model()
 
@@ -39,8 +49,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     filter_backends = (RecipeFilterBackend,)
-    permission_classes = (RecipePermission, )
-    
+    permission_classes = (RecipePermission,)
+
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
@@ -54,7 +64,7 @@ class SubscribeApiView(CreateDeleteAPIView):
         serializer.save(
             subscriber=self.request.user, subscribed_to=subscribed_to)
 
-    def delete(self, request, *args, **kwargs):
+    def delete(self, request):
         subscribed_to = get_object_or_404(User, pk=self.kwargs.get("user_id"))
         try:
             instance = get_object_or_404(
@@ -131,9 +141,9 @@ def download_shopping_cart(request):
         IngredientRecipe.objects.filter(
             recipe__in_shopping_carts__user=request.user)
         .values("ingredient__name")
-        .annotate(total_amount=Sum("amount")).values_list(
-            "ingredient__name", "total_amount", "ingredient__measurement_unit"
-        )
+        .annotate(total_amount=Sum("amount"))
+        .values_list(
+            "ingredient__name", "total_amount", "ingredient__measurement_unit")
     )
     content = "\n".join(
         f" - {name.title()} ({measurement_unit}) -> {total_amount} "

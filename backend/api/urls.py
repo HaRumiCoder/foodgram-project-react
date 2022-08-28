@@ -1,10 +1,15 @@
+from api.views import (
+    FavoriteApiView,
+    IngredientViewSet,
+    RecipeViewSet,
+    ShoppingCartApiView,
+    SubscribeApiView,
+    SubscribeListApiView,
+    TagViewSet,
+    download_shopping_cart,
+)
 from django.urls import include, path
 from rest_framework.routers import SimpleRouter
-
-from api.views import (FavoriteApiView, IngredientViewSet, RecipeViewSet,
-                       ShoppingCartApiView, SubscribeApiView,
-                       SubscribeListApiView, TagViewSet,
-                       download_shopping_cart)
 
 router_v1 = SimpleRouter()
 router_v1.register("tags", TagViewSet)

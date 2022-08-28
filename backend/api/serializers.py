@@ -5,10 +5,15 @@ from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 from djoser import serializers as djoser_serializers
+from recipes.models import (
+    Favorite,
+    Ingredient,
+    IngredientRecipe,
+    Recipe,
+    ShoppingCartRecipe,
+    Tag,
+)
 from rest_framework import serializers
-
-from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
-                            ShoppingCartRecipe, Tag)
 from users.models import Subscription
 
 User = get_user_model()
@@ -20,7 +25,13 @@ class CreateUserSerializer(djoser_serializers.UserCreateSerializer):
     class Meta:
         model = User
         fields = (
-            "email", "id", "username", "first_name", "last_name", "password")
+            "email",
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "password"
+        )
 
 
 class UserSerialiser(serializers.ModelSerializer):
@@ -28,8 +39,15 @@ class UserSerialiser(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ("email", "id", "username", "first_name", "last_name", "is_subscribed")
-    
+        fields = (
+            "email",
+            "id",
+            "username",
+            "first_name",
+            "last_name",
+            "is_subscribed"
+        )
+
     def get_is_subscribed(self, obj):
         if not self.context.get("request").user.is_authenticated:
             return False
@@ -106,23 +124,21 @@ class RecipeSerializer(serializers.ModelSerializer):
             "cooking_time",
             "author",
             "is_favorited",
-            "is_in_shopping_cart"
+            "is_in_shopping_cart",
         )
 
     def get_is_favorited(self, obj):
         if not self.context.get("request").user.is_authenticated:
             return False
         return Favorite.objects.filter(
-            user=self.context.get("request").user,
-            recipe=obj
+            user=self.context.get("request").user, recipe=obj
         ).exists()
 
     def get_is_in_shopping_cart(self, obj):
         if not self.context.get("request").user.is_authenticated:
             return False
         return ShoppingCartRecipe.objects.filter(
-            user=self.context.get("request").user,
-            recipe=obj
+            user=self.context.get("request").user, recipe=obj
         ).exists()
 
     def create(self, validated_data):
@@ -187,7 +203,7 @@ class SubscribeSerializer(serializers.ModelSerializer):
             "last_name",
             "recipes",
             "recipes_count",
-            "is_subscribed"
+            "is_subscribed",
         )
 
     def get_recipes_count(self, obj):

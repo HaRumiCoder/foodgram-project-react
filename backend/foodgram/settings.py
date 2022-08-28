@@ -25,7 +25,7 @@ SECRET_KEY = "*1@-gmxj@!j)s-+wsi*2g*$b@_%bx9wa%04r&0w=99o+y=5+r1"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -146,7 +146,7 @@ DJOSER = {
     },
     "PERMISSIONS": {
         "user_list": ["rest_framework.permissions.AllowAny"],
-        "user": ["rest_framework.permissions.AllowAny"]
+        "user": ["rest_framework.permissions.AllowAny"],
     },
 }
 
