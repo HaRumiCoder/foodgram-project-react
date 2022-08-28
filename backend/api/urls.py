@@ -1,13 +1,7 @@
-from api.views import (
-    FavoriteApiView,
-    IngredientViewSet,
-    RecipeViewSet,
-    ShoppingCartApiView,
-    SubscribeApiView,
-    SubscribeListApiView,
-    TagViewSet,
-    download_shopping_cart,
-)
+from api.views import (FavoriteApiView, IngredientViewSet, RecipeViewSet,
+                       ShoppingCartApiView, SubscribeApiView,
+                       SubscribeListApiView, TagViewSet,
+                       download_shopping_cart)
 from django.urls import include, path
 from rest_framework.routers import SimpleRouter
 

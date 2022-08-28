@@ -2,14 +2,8 @@ from django.contrib.auth import get_user_model
 from django.db.models import Sum
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
-from recipes.models import (
-    Favorite,
-    Ingredient,
-    IngredientRecipe,
-    Recipe,
-    ShoppingCartRecipe,
-    Tag,
-)
+from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
+                            ShoppingCartRecipe, Tag)
 from rest_framework import generics, status, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.permissions import AllowAny
@@ -19,14 +13,9 @@ from users.models import Subscription
 from .filters import RecipeFilterBackend
 from .generics import CreateDeleteAPIView
 from .permissions import RecipePermission
-from .serializers import (
-    FavoriteSerializer,
-    IngredientSerializer,
-    RecipeSerializer,
-    ShoppingCartSerializer,
-    SubscribeSerializer,
-    TagSerializer,
-)
+from .serializers import (FavoriteSerializer, IngredientSerializer,
+                          RecipeSerializer, ShoppingCartSerializer,
+                          SubscribeSerializer, TagSerializer)
 
 User = get_user_model()
 
