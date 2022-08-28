@@ -11,7 +11,7 @@ class RecipeFilterBackend(filters.BaseFilterBackend):
             queryset = queryset.filter(author__id=author_id)
         if tags:
             queryset = queryset.filter(tags__slug__in=tags)
-        if not request.user.is_authenticated:
+        if not self.context.get("request").user.is_authenticated:
             return queryset
         if is_favorited:
             queryset = queryset.filter(favorite_for__user=request.user)
