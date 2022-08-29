@@ -63,6 +63,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
+            cd infra
             sudo docker-compose stop
             sudo docker-compose rm web
             touch .env
@@ -73,4 +74,4 @@ jobs:
             echo DB_HOST=${{ secrets.DB_HOST }} >> .env
             echo DB_PORT=${{ secrets.DB_PORT }} >> .env
             echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
-            sudo docker-compose up
+            yes | sudo docker-compose up --force-recreate --build -d
