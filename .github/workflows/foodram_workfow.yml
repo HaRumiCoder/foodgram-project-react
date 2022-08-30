@@ -64,8 +64,6 @@ jobs:
           passphrase: ${{ secrets.PASSPHRASE }}
           script: |
             cd infra
-            sudo docker-compose stop
-            sudo docker-compose rm web
             touch .env
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
             echo DB_NAME=${{ secrets.DB_NAME }} >> .env
@@ -74,4 +72,5 @@ jobs:
             echo DB_HOST=${{ secrets.DB_HOST }} >> .env
             echo DB_PORT=${{ secrets.DB_PORT }} >> .env
             echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
-            yes | sudo docker-compose up --force-recreate --build -d
+            echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
+            yes | sudo docker-compose up
