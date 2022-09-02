@@ -2,12 +2,13 @@ from django.contrib.auth import get_user_model
 from django.db.models import Sum
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
-from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
-                            ShoppingCartRecipe, Tag)
 from rest_framework import generics, status, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+
+from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
+                            ShoppingCartRecipe, Tag)
 from users.models import Subscription
 
 from .filters import RecipeFilterBackend
@@ -53,7 +54,7 @@ class SubscribeApiView(CreateDeleteAPIView):
         serializer.save(
             subscriber=self.request.user, subscribed_to=subscribed_to)
 
-    def delete(self, request):
+    def delete(self, request, *args, **kwargs):
         subscribed_to = get_object_or_404(User, pk=self.kwargs.get("user_id"))
         try:
             instance = get_object_or_404(
