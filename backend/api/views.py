@@ -4,7 +4,7 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
 from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
                             ShoppingCartRecipe, Tag)
-from rest_framework import generics, status, viewsets
+from rest_framework import generics, status, viewsets, filters
 from rest_framework.decorators import api_view
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -32,6 +32,8 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = IngredientSerializer
     pagination_class = None
     permission_classes = (AllowAny,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',) 
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
