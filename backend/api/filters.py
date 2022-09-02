@@ -18,3 +18,7 @@ class RecipeFilterBackend(filters.BaseFilterBackend):
         if is_in_shopping_cart:
             queryset = queryset.filter(in_shopping_carts__user=request.user)
         return queryset
+
+
+class IngredientSearchFilter(filters.SearchFilter):
+    search_param = "name"
