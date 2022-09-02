@@ -5,10 +5,9 @@ from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.shortcuts import get_object_or_404
 from djoser import serializers as djoser_serializers
-from rest_framework import serializers
-
 from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
                             ShoppingCartRecipe, Tag)
+from rest_framework import serializers
 from users.models import Subscription
 
 User = get_user_model()
