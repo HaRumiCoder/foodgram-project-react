@@ -1,4 +1,4 @@
-# Foodgram ![](https://github.com/HaRumiCoder/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)
+# Foodgram ![](https://github.com/HaRumiCoder/foodgram-project-react/actions/workflows/foodram_workflow.yml/badge.svg)
 
 Проект доступен по ссылке http://84.201.176.127/
 
