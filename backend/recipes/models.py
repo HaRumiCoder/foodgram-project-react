@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 
-from .validators import validate_hex_code
+from .validators import validate_hex_code, validate_nonzero
 
 User = get_user_model()
 
@@ -72,6 +72,10 @@ class Recipe(models.Model):
         auto_now_add=True,
         verbose_name="Дата"
     )
+    ingredients = models.ManyToManyField(
+        Ingredient,
+        through='IngredientRecipe',
+        verbose_name="Ингредиенты")
 
     class Meta:
         ordering = ("-pub_date",)
@@ -89,14 +93,22 @@ class IngredientRecipe(models.Model):
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name="ingredients",
         verbose_name="Рецепт",
     )
-    amount = models.PositiveIntegerField(verbose_name="Количество")
+    amount = models.PositiveIntegerField(
+        verbose_name="Количество",
+        validators=[validate_nonzero])
 
     class Meta:
         verbose_name = "Ингредиент-Рецепт"
         verbose_name_plural = "Ингредиент-Рецепт"
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=["verbose_name", "verbose_name_plural"],
+                name="unique_ingredient_in_recipe"
+            )
+        ]
 
 
 class Favorite(models.Model):

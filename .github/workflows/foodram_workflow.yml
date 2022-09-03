@@ -73,6 +73,7 @@ jobs:
             echo DB_HOST=${{ secrets.DB_HOST }} >> .env
             echo DB_PORT=${{ secrets.DB_PORT }} >> .env
             echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
+            echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
             sudo docker pull shilsny/foodgram
             sudo docker-compose up -d --no-deps --build web
             sudo docker-compose up -d
