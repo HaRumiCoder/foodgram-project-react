@@ -44,7 +44,7 @@ class Ingredient(models.Model):
 class Recipe(models.Model):
     name = models.CharField(
         max_length=200,
-        verbose_name="Цвет"
+        verbose_name="Название"
     )
     text = models.TextField(
         null=True,
@@ -68,8 +68,13 @@ class Recipe(models.Model):
     cooking_time = models.PositiveIntegerField(
         verbose_name="Время", validators=[MinValueValidator(1)]
     )
+    pub_date = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name="Дата"
+    )
 
     class Meta:
+        ordering = ("-pub_date",)
         verbose_name = "Рецепт"
         verbose_name_plural = "Рецепты"
 

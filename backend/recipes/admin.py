@@ -14,9 +14,28 @@ class IngredientAdmin(admin.ModelAdmin):
     list_filter = ("name",)
 
 
+class TagAdmin(admin.ModelAdmin):
+    list_display = ("name", "slug")
+
+
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display = ("user", "recipe")
+    list_filter = ("user", "recipe")
+
+
+class ShoppingCartRecipeAdmin(admin.ModelAdmin):
+    list_display = ("user", "recipe")
+    list_filter = ("user", "recipe")
+
+
+class IngredientRecipeAdmin(admin.ModelAdmin):
+    list_display = ("ingredient", "recipe")
+    list_filter = ("recipe",)
+
+
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Ingredient, IngredientAdmin)
-admin.site.register(Tag)
-admin.site.register(Favorite)
-admin.site.register(IngredientRecipe)
-admin.site.register(ShoppingCartRecipe)
+admin.site.register(Tag, TagAdmin)
+admin.site.register(Favorite, FavoriteAdmin)
+admin.site.register(IngredientRecipe, IngredientRecipeAdmin)
+admin.site.register(ShoppingCartRecipe, ShoppingCartRecipeAdmin)

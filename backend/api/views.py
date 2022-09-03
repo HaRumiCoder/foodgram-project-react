@@ -2,12 +2,13 @@ from django.contrib.auth import get_user_model
 from django.db.models import Sum
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404
-from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
-                            ShoppingCartRecipe, Tag)
 from rest_framework import generics, status, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+
+from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
+                            ShoppingCartRecipe, Tag)
 from users.models import Subscription
 
 from .filters import IngredientSearchFilter, RecipeFilterBackend
@@ -65,7 +66,7 @@ class SubscribeApiView(CreateDeleteAPIView):
             )
         except Http404:
             return Response(
-                {"errors": "Рецепт не добавлен в избранное"},
+                {"errors": "Вы не подписаны на этого автора"},
                 status.HTTP_400_BAD_REQUEST,
             )
         super().perform_destroy(instance)
@@ -92,7 +93,9 @@ class FavoriteApiView(CreateDeleteAPIView):
         recipe = get_object_or_404(Recipe, pk=self.kwargs.get("recipe_id"))
         try:
             instance = get_object_or_404(
-                Favorite, user=self.request.user, recipe=recipe
+                Favorite,
+                user=self.request.user,
+                recipe=recipe
             )
         except Http404:
             return Response(
@@ -115,7 +118,9 @@ class ShoppingCartApiView(CreateDeleteAPIView):
         recipe = get_object_or_404(Recipe, pk=self.kwargs.get("recipe_id"))
         try:
             instance = get_object_or_404(
-                ShoppingCartRecipe, user=self.request.user, recipe=recipe
+                ShoppingCartRecipe,
+                user=self.request.user,
+                recipe=recipe
             )
         except Http404:
             return Response(
