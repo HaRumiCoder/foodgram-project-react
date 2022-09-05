@@ -141,7 +141,7 @@ def download_shopping_cart(request):
         .values_list(
             "ingredient__name", "total_amount", "ingredient__measurement_unit")
     )
-    
+
     response = HttpResponse(
         create_shopping_cart(ingredient_list), content_type="text/plain")
     response["Content-Disposition"] = "attachment; filename=shopping_list.txt"
