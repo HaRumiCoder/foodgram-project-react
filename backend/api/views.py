@@ -13,7 +13,6 @@ from api.permissions import RecipePermission
 from api.serializers import (FavoriteSerializer, IngredientSerializer,
                              RecipeSerializer, ShoppingCartSerializer,
                              SubscribeSerializer, TagSerializer)
-from api.utils import create_shopping_cart
 from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
                             ShoppingCartRecipe, Tag)
 from users.models import Subscription
