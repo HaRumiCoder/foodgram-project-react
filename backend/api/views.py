@@ -13,6 +13,7 @@ from api.permissions import RecipePermission
 from api.serializers import (FavoriteSerializer, IngredientSerializer,
                              RecipeSerializer, ShoppingCartSerializer,
                              SubscribeSerializer, TagSerializer)
+from api.utils import create_shopping_cart
 from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
                             ShoppingCartRecipe, Tag)
 from users.models import Subscription
@@ -140,11 +141,8 @@ def download_shopping_cart(request):
         .values_list(
             "ingredient__name", "total_amount", "ingredient__measurement_unit")
     )
-
-    content = "\n".join(
-        f" - {name.title()} ({measurement_unit}) -> {total_amount} "
-        for name, total_amount, measurement_unit in ingredient_list
-    )
-    response = HttpResponse(content, content_type="text/plain")
+    
+    response = HttpResponse(
+        create_shopping_cart(ingredient_list), content_type="text/plain")
     response["Content-Disposition"] = "attachment; filename=shopping_list.txt"
     return response

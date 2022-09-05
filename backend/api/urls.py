@@ -18,7 +18,7 @@ urlpatterns = [
     path("recipes/<int:recipe_id>/favorite/", FavoriteApiView.as_view()),
     path("recipes/<int:recipe_id>/shopping_cart/",
          ShoppingCartApiView.as_view()),
-    path("recipes/  /", download_shopping_cart),
+    path("recipes/download_shopping_cart/", download_shopping_cart),
     path("", include("djoser.urls")),
     path("", include(router_v1.urls)),
 ]
