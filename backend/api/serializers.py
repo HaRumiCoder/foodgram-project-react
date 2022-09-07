@@ -122,6 +122,13 @@ class RecipeSerializer(serializers.ModelSerializer):
             "is_in_shopping_cart",
         )
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        if self.context['view'].action == 'retrieve':
+            tags = Tag.objects.filter(id__in=data['tags'])
+            data['tags'] = TagSerializer(instance=tags, many=True).data
+        return data
+
     def get_is_favorited(self, obj):
         if not self.context.get("request").user.is_authenticated:
             return False
